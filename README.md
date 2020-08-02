@@ -3,11 +3,18 @@ A simple tool to quantify your technical debt
 
 ## installation 
 
-soon
+git clone https://github.com/lcetinsoy/tech-debt --depth=1 
 
+Remark: proper install comming soon
 
 ## usage
 
-python analyse.py <path>
+python main.py --folder=<path> --extension=".ext"
 
-it will output a score
+
+## Roadmap 
+
+- Ignore folders option
+- Attributing points to each debpt type
+- Group statistics per folders
+- Configuration files to include or ignore file types
