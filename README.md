@@ -1,11 +1,16 @@
 # tech-debt
 A simple tool to quantify your technical debt
 
+
 ## installation 
 
-git clone https://github.com/lcetinsoy/tech-debt --depth=1 
+```bash
 
-Remark: proper install comming soon
+git clone https://github.com/lcetinsoy/tech-debt --depth=1
+
+```
+ 
+Remark: proper install via pip comming soon
 
 ## usage
 
