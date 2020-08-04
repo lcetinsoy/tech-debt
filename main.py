@@ -1,5 +1,8 @@
+#!/usr/bin/python3
+
 import argparse
 import yaml
+
 from techdebt.lib import *
 
 

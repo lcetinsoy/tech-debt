@@ -1,9 +1,15 @@
 folder:
   included:
-    - /home/zoubab/dev/nowledgeable/core
+    - /path/to/folder
   excluded:
-    - vendor/
-    - node_modules/
+    - vendor
+    - node_modules
+    - var
+    - web
+    - nbproject
+    - public
+    - .git
+    - __pycache__
 
 extensions:
   - .py

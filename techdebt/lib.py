@@ -55,7 +55,7 @@ def get_folder_debt_annotations(folder, extensions, exclusions = []):
 
 
     files = list_file(folder, extensions, exclusions)
-    print(files)
+
     for file in files:
 
         with open(file, 'r', encoding='latin1') as f:
@@ -74,9 +74,10 @@ def list_file(folder, extensions, exclusions):
     paths = []
     for root, dirs, files in os.walk(folder):
 
+
         keep = True
         for exclusion in exclusions:
-            if exclusion in dirs:
+            if exclusion in root:
                 keep = False
 
         if not keep:
@@ -102,7 +103,7 @@ def test_list_file():
 
     exclusions = []
     paths = list_file(folder, exts, exclusions)
-    print(paths)
+
     assert(len(paths) > 0)
 
 
