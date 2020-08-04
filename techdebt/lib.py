@@ -1,9 +1,9 @@
 import os
 import re
 
-def extract_debt_annotations(content, debt_annotation ='@debpt'):
+def extract_debt_annotations(content, debt_annotation ='@debt'):
 
-    pattern = r'@debpt\((.*)\).*'
+    pattern = r'{}\((.*)\).*'.format(debt_annotation)
     matches = re.findall(pattern, content)
 
     return matches
@@ -37,29 +37,28 @@ def debt_statistics(str_annotations):
 
 
 
-def list_file(folder, ext):
+def get_all_debt_annotations(folders, extensions, exclusions = []):
 
-    paths = []
-    for root, dirs, files in os.walk(folder):
+    annotations = []
+    for folder in folders:
 
-        for file in files:
-            if file.endswith(ext):
-                paths.append(os.path.join(root, file))
+        annotations += get_folder_debt_annotations(folder, extensions, exclusions)
 
-    return paths
+    return annotations
 
 
 
 
-def get_all_debt_annotations(folder, extension):
+def get_folder_debt_annotations(folder, extensions, exclusions = []):
 
     annotations = []
 
-    files = list_file(folder, extension)
 
+    files = list_file(folder, extensions, exclusions)
+    print(files)
     for file in files:
 
-        with open(file, 'r') as f:
+        with open(file, 'r', encoding='latin1') as f:
 
             content = f.read()
         annotations += extract_debt_annotations(content)
@@ -69,13 +68,41 @@ def get_all_debt_annotations(folder, extension):
 
 
 
+
+def list_file(folder, extensions, exclusions):
+
+    paths = []
+    for root, dirs, files in os.walk(folder):
+
+        keep = True
+        for exclusion in exclusions:
+            if exclusion in dirs:
+                keep = False
+
+        if not keep:
+            continue
+
+        for file in files:
+
+            parts = file.split('.')
+            ext = "." + parts[len(parts) - 1]
+
+            if ext in extensions:
+
+                full_path = os.path.join(root, file)
+                paths.append(full_path)
+
+    return paths
+
+
 def test_list_file():
 
-    ext = ".py"
-    folder = "."
+    exts = [".py"]
+    folder = "/home/zoubab/dev/tech-debt/techdebt"
 
-    paths = list_file(folder, ext)
-
+    exclusions = []
+    paths = list_file(folder, exts, exclusions)
+    print(paths)
     assert(len(paths) > 0)
 
 
@@ -84,12 +111,12 @@ def test_extract_debt_annotations():
     content = """coucou 
     
     
-    @debpt("sdsd": "sdsd")
+    @debt("sdsd": "sdsd")
     def lala():
         return 2
     
     
-    @debpt("api": "parameters")
+    @debt("api": "parameters")
     
     """
 

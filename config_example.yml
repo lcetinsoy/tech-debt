@@ -1,0 +1,13 @@
+folder:
+  included:
+    - /home/zoubab/dev/nowledgeable/core
+  excluded:
+    - vendor/
+    - node_modules/
+
+extensions:
+  - .py
+  - .js
+  - .md
+  - .php
+
