@@ -27,17 +27,13 @@ if os.path.isfile(conf_file):
     included_folders = folders['included']
 
     extensions = options['extensions']
-    print(extensions, included_folders, excluded_folders)
-    debtps = get_all_debt_annotations(included_folders, extensions, excluded_folders)
-    debpt_statistics = debt_statistics(debtps)
+    scores = options['scores']
 
-else:
+    debtps = analyse_debt(included_folders, extensions, excluded_folders)
 
-    folder = args.folder
-    ext = args.extension
 
-    debtps = get_all_debt_annotations([folder], [ext])
-    debpt_statistics = debt_statistics(debtps)
+    debpt_statistics = debt_statistics(debtps, scores)
+
 
 
 print(debpt_statistics)

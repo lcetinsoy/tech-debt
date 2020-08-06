@@ -3,70 +3,154 @@ import re
 
 def extract_debt_annotations(content, debt_annotation ='@debt'):
 
-    pattern = r'{}\((.*)\).*'.format(debt_annotation)
+    pattern = r'{}\(?([\'|\"\w+:?\s+\w+\'\"]*)\)?'.format(debt_annotation)
     matches = re.findall(pattern, content)
 
     return matches
 
 
+def test_extract_debt_annotations():
+    content = """coucou 
+    
+    @debt("sdsd": "sdsd")
+    def lala():
+        return 2
 
-def debt_statistics(str_annotations):
 
-    parsed_annotations = {}
+    @debt("api": "parameters")
+
+    @debt
+
+    """
+
+    out = extract_debt_annotations(content)
+
+    assert len(out) == 3
+
+
+    content = """
+    
+    \@debt('lala': 'lala')    
+    """
+    out = extract_debt_annotations(content)
+
+    assert  out == ["'lala': 'lala'"]
+
+
+def parse_annotation(str_annotation):
+
+    if ":" in str_annotation:
+        annotation_data = str_annotation.split(":")
+        annotation_type = annotation_data[0].strip()
+        annotation_comment = annotation_data[1].strip()
+
+    else:
+        annotation_type = str_annotation.strip()
+        annotation_comment = ""
+
+    annotation_type = annotation_type.replace('"', '').replace("'", "")
+    annotation_comment = annotation_comment.replace('"', '').replace("'", "")
+
+
+    return annotation_type, annotation_comment
+
+
+def analyse_file_debt(file, folder, extension):
+
+
+    file_debts = []
+    with open(file, 'r', encoding='latin1') as f:
+        content = f.read()
+
+    str_annotations = extract_debt_annotations(content)
 
     for str_annotation in str_annotations:
 
-        if ":" in str_annotation:
+        debt_type, debt_comment = parse_annotation(str_annotation)
+        debt = {
+            'file': file,
+            'folder': folder,
+            'extension': extension,
+            'debt_type': debt_type,
+            'comment':debt_comment
+        }
 
-            annotation_type = str_annotation.split(":")[0]
+        file_debts.append(debt)
 
-        else:
-            annotation_type = str_annotation
-
-
-        annotation_type = annotation_type.replace("'", "").replace('"', "")
-        if annotation_type in parsed_annotations:
-            parsed_annotations[annotation_type] += 1
-
-        else:
-            parsed_annotations[annotation_type] = 1
-
-    return parsed_annotations
+    return file_debts
 
 
+def get_file_extension(file_path):
+
+    parts = file_path.split('.')
+    return parts[len(parts) - 1]
+
+def analyse_folder_debt(folder, extensions, exclusions = []):
+
+    all_debt = []
+    file_paths = list_file(folder, extensions, exclusions)
+
+    for file_path in file_paths:
+
+        extension = get_file_extension(file_path)
+
+        all_debt += analyse_file_debt(file_path, folder, extension)
+
+    return all_debt
 
 
+def analyse_debt(folders, extensions, exclusions = []):
 
-def get_all_debt_annotations(folders, extensions, exclusions = []):
-
-    annotations = []
+    debt = []
     for folder in folders:
 
-        annotations += get_folder_debt_annotations(folder, extensions, exclusions)
+        debt += analyse_folder_debt(folder, extensions, exclusions)
 
-    return annotations
-
-
+    return debt
 
 
-def get_folder_debt_annotations(folder, extensions, exclusions = []):
 
-    annotations = []
+def debt_statistics(dict_annotations, scores = {}):
 
+    """
+    produce a statistical report of debt based
+    on all parsed debt annotations
 
-    files = list_file(folder, extensions, exclusions)
+    :param dict_annotations:
+    :return:
+    """
 
-    for file in files:
+    if len(dict_annotations) == 0:
+        return {
+            'total': 0
+        }
 
-        with open(file, 'r', encoding='latin1') as f:
+    import numpy as np
+    import pandas as pd
 
-            content = f.read()
-        annotations += extract_debt_annotations(content)
+    df = pd.DataFrame(dict_annotations)
 
+    df['score'] = np.nan
 
-    return annotations
+    def update_score(row):
 
+        debt_type = row['debt_type']
 
+        if  debt_type in scores:
+            row['score'] = scores[debt_type]
+
+        return row
+
+    df = df.apply(update_score, axis=1)
+
+    print(df)
+    return {
+
+        "total": len(df),
+        "per_file_extension": df.groupby(['extension'])[['extension', 'score']].agg('sum'),
+        "per_type": df.groupby(['debt_type'])[['debt_type', 'score']].agg('sum'),
+        "per_folder": df.groupby(['folder'])[['folder', 'score']].agg('sum'),
+    }
 
 
 def list_file(folder, extensions, exclusions):
@@ -105,23 +189,4 @@ def test_list_file():
     paths = list_file(folder, exts, exclusions)
 
     assert(len(paths) > 0)
-
-
-def test_extract_debt_annotations():
-
-    content = """coucou 
-    
-    
-    @debt("sdsd": "sdsd")
-    def lala():
-        return 2
-    
-    
-    @debt("api": "parameters")
-    
-    """
-
-    out = extract_debt_annotations(content)
-
-    assert len(out) == 2
 

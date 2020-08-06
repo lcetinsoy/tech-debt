@@ -49,7 +49,6 @@ python main.py --conf="/path/to/conf.yml"
 
 ## Roadmap 
 
-- fix parsing bugs
-- Attributing points to each debpt type
-- Group statistics per folders
+- debt by extension
 - Incorporating other tools in debt computing like static code analysis
+- tracking debt over time

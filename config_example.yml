@@ -1,6 +1,8 @@
 folder:
   included:
-    - /path/to/folder
+    - test_project/subA
+    - test_project/subB
+
   excluded:
     - vendor
     - node_modules
@@ -17,3 +19,8 @@ extensions:
   - .md
   - .php
 
+
+
+scores:
+  api: 5
+  implementation: 3
