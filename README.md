@@ -9,11 +9,15 @@ A simple tool to quantify your technical debt
 
 git clone https://github.com/lcetinsoy/tech-debt --depth=1
 
+pip install pandas
+
 ```
- 
+
 Remark: proper install via pip comming soon
 
-## Usage
+
+## Usage 
+
 
 1. Adding debpt annotation
 
@@ -39,6 +43,13 @@ extensions:
   - .md
   - .php
 
+
+scores:
+  api: 5
+  implementation: 3
+  archicture: 10
+
+
 ```
 
 2. Quantifying the debpt
@@ -49,6 +60,6 @@ python main.py --conf="/path/to/conf.yml"
 
 ## Roadmap 
 
-- debt by extension
-- Incorporating other tools in debt computing like static code analysis
+- better reporting
 - tracking debt over time
+- Incorporating other tools in debt computing like static code analysis
