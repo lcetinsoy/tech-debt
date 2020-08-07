@@ -2,7 +2,8 @@
 A simple tool to quantify your technical debt
 
 
-## Installation 
+## Installation  
+
 
 
 ```bash
@@ -21,21 +22,46 @@ Remark: proper install via pip comming soon
 
 1. Adding debpt annotation
 
-add @debt() or @debt("key":"value") in your project files
-to mark some technical debt
+add debt annotations in your project files to mark technical debt: 
+@debt() 
+@debt("debt_type") or 
+@debt("debt_type":"comment")
+  
+Let's say you have a python file with some debt : 
+
+```python
+
+
+#@debt("implementation")
+def poor_function():
+    
+    #@debt("implementation": "variable naming")
+    bla = 2
+    return bla
+
+```
 
 2. Project configuration
 
-Add the following configuration file in your project folder (cf config_example.yml)
+Adapt the following configuration file and put 
+it in your project folder (cf config_example.yml)
  
 ```yaml
 
 folder:
   included:
-    - /path/to/project
+    - test_project/subA
+    - test_project/subB
+
   excluded:
-    - vendor/
-    - node_modules/
+    - vendor
+    - node_modules
+    - var
+    - web
+    - nbproject
+    - public
+    - .git
+    - __pycache__
 
 extensions:
   - .py
@@ -43,19 +69,19 @@ extensions:
   - .md
   - .php
 
-
 scores:
   api: 5
   implementation: 3
-  archicture: 10
-
 
 ```
 
-2. Quantifying the debpt
+3. Run
 
+```bash
 
-python main.py --conf="/path/to/conf.yml"
+python main.py --conf="path/to/config_file.yml" #default is "techdebt.yml" 
+
+```
 
 
 ## Roadmap 
@@ -63,3 +89,8 @@ python main.py --conf="/path/to/conf.yml"
 - better reporting
 - tracking debt over time
 - Incorporating other tools in debt computing like static code analysis
+
+
+## Testing 
+
+pytest -s techdebt/lib.py
