@@ -1,17 +1,24 @@
 import os
 import re
 
-def extract_debt_annotations(content, debt_annotation ='@debt'):
+
+def extract_debt_annotations(content, debt_annotation='@debt'):
+    """
+    Extract debt annotations in a text
+
+    :param content:
+    :param debt_annotation:
+    :return:
+    """
 
     pattern = r'{}\(?([\'|\"\w+:?\s+\w+\'\"]*)\)?'.format(debt_annotation)
     matches = re.findall(pattern, content)
-
     return matches
 
 
 def test_extract_debt_annotations():
     content = """coucou 
-    
+
     @debt("sdsd": "sdsd")
     def lala():
         return 2
@@ -27,14 +34,13 @@ def test_extract_debt_annotations():
 
     assert len(out) == 3
 
-
     content = """
-    
+
     \@debt('lala': 'lala')    
     """
     out = extract_debt_annotations(content)
 
-    assert  out == ["'lala': 'lala'"]
+    assert out == ["'lala': 'lala'"]
 
 
 def parse_annotation(str_annotation):
