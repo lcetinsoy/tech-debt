@@ -22,11 +22,13 @@ Remark: proper install via pip comming soon
 
 1. Adding debpt annotation
 
-add debt annotations in your project files to mark technical debt: 
-@debt() 
-@debt("debt_type") or 
-@debt("debt_type":"comment")
+add debt annotations in your project files to mark technical debt:
+
+- @debt() 
+- @debt("debt_type") or 
+- @debt("debt_type":"comment")
   
+
 Let's say you have a python file with some debt : 
 
 ```python
