@@ -10,7 +10,7 @@ A simple tool to quantify your technical debt
 
 git clone https://github.com/lcetinsoy/tech-debt --depth=1
 
-pip install pandas
+pip install pandas matplotlib
 
 ```
 
@@ -85,11 +85,12 @@ python main.py --conf="path/to/config_file.yml" #default is "techdebt.yml"
 
 ```
 
-
 ## Roadmap 
 
+- adding line file of annotation
 - better reporting
 - tracking debt over time
+- adding estimation range
 - Incorporating other tools in debt computing like static code analysis
 
 

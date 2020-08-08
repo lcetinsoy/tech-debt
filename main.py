@@ -27,11 +27,10 @@ if os.path.isfile(conf_file):
     scores = options['scores']
 
     debtps = analyse_debt(included_folders, extensions, excluded_folders)
+    debt_statistics = compute_debt_statistics(debtps, scores)
 
-
-    debpt_statistics = debt_statistics(debtps, scores)
-
-    print(debpt_statistics)
+    plot_debt(debt_statistics)
+    print(debt_statistics)
 
 
 else:

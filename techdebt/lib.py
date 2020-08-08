@@ -116,7 +116,7 @@ def analyse_debt(folders, extensions, exclusions = []):
 
 
 
-def debt_statistics(dict_annotations, scores = {}):
+def compute_debt_statistics(dict_annotations, scores = {}):
 
     """
     produce a statistical report of debt based
@@ -149,13 +149,13 @@ def debt_statistics(dict_annotations, scores = {}):
 
     df = df.apply(update_score, axis=1)
 
-    print(df)
+
     return {
 
         "total": len(df),
-        "per_file_extension": df.groupby(['extension'])[['extension', 'score']].agg('sum'),
-        "per_type": df.groupby(['debt_type'])[['debt_type', 'score']].agg('sum'),
-        "per_folder": df.groupby(['folder'])[['folder', 'score']].agg('sum'),
+        "per_file_extension": df.groupby(['extension'])[['extension', 'score']].agg('sum').reset_index(),
+        "per_type": df.groupby(['debt_type'])[['debt_type', 'score']].agg('sum').reset_index(),
+        "per_folder": df.groupby(['folder'])[['folder', 'score']].agg('sum').reset_index(),
     }
 
 
@@ -196,3 +196,22 @@ def test_list_file():
 
     assert(len(paths) > 0)
 
+
+
+def plot_debt(debt_statistics):
+
+    import matplotlib.pyplot as plt
+    per_type = debt_statistics['per_type']
+    per_folder = debt_statistics['per_folder']
+    per_extension = debt_statistics['per_file_extension']
+
+    f = plt.subplot(2, 2, 1)
+    f.bar(per_type['debt_type'], per_type['score'])
+
+    f = plt.subplot(2, 2, 2)
+    f.bar(per_folder['folder'], per_folder['score'])
+
+    f = plt.subplot(2, 2, 3)
+    f.bar(per_extension['extension'], per_extension['score'])
+
+    plt.show()
