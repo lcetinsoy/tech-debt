@@ -1,21 +1,13 @@
 # Tech-debt
-A simple tool to quantify your technical debt
 
+A simple tool to quantify your technical debt
 
 ## Installation  
 
+requirements : python 3 
 
 
-```bash
-
-git clone https://github.com/lcetinsoy/tech-debt --depth=1
-
-pip install pandas matplotlib
-
-```
-
-Remark: proper install via pip comming soon
-
+pip install techdebt
 
 ## Usage 
 
@@ -31,16 +23,13 @@ add debt annotations in your project files to mark technical debt:
 
 Let's say you have a python file with some debt : 
 
-```python
-
-
+```bash
 #@debt("implementation")
 def poor_function():
     
     #@debt("implementation": "variable naming")
     bla = 2
     return bla
-
 ```
 
 2. Project configuration
@@ -80,9 +69,7 @@ scores:
 3. Run
 
 ```bash
-
-python main.py --conf="path/to/config_file.yml" #default is "techdebt.yml" 
-
+techdebt --conf="path/to/config_file.yml" #default is "techdebt.yml"
 ```
 
 ## Roadmap 
@@ -96,4 +83,4 @@ python main.py --conf="path/to/config_file.yml" #default is "techdebt.yml"
 
 ## Testing 
 
-pytest -s techdebt/lib.py
+pytest -s src/lib.py

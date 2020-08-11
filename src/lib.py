@@ -13,10 +13,15 @@ def extract_debt_annotations(content, debt_annotation='@debt'):
 
     pattern = r'{}\(?([\'|\"\w+:?\s+\w+\'\"]*)\)?'.format(debt_annotation)
     matches = re.findall(pattern, content)
+
     return matches
 
 
+
+
+
 def test_extract_debt_annotations():
+
     content = """coucou 
 
     @debt("sdsd": "sdsd")
@@ -41,6 +46,8 @@ def test_extract_debt_annotations():
     out = extract_debt_annotations(content)
 
     assert out == ["'lala': 'lala'"]
+
+
 
 
 def parse_annotation(str_annotation):
