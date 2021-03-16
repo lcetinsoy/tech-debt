@@ -13,7 +13,7 @@ pip install techdebt
 ## Usage 
 
 
-1. Adding debpt annotation
+1. Adding debt annotation
 
 add debt annotations in your project files to mark technical debt:
 
@@ -79,7 +79,9 @@ techdebt --conf="path/to/config_file.yml" #default is "techdebt.yml"
 You may want to have automatic code checkers do 
 some analysis and being included in the final debt score
 
-For now phpstan is the sole plugin available
+For now phpstan is the sole plugin available 
+
+**Update : not yet working**
 
 edit configuration with the following: 
 

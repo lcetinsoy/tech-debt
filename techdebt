@@ -33,6 +33,8 @@ if os.path.isfile(conf_file):
     debt_statistics = compute_debt_statistics(debts, scores)
 
     print_stats(debt_statistics)
+
+    print('detail')
     for debt in debts:
         print("---debt: ", debt['file'], debt['line'], debt['debt_type'], debt['comment'])
     plot_debt(debt_statistics)
