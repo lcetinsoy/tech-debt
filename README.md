@@ -6,8 +6,9 @@ A simple tool to quantify your technical debt
 
 requirements : python 3 
 
-
+```bash
 pip install techdebt
+```
 
 ## Usage 
 
@@ -23,7 +24,7 @@ add debt annotations in your project files to mark technical debt:
 
 Let's say you have a python file with some debt : 
 
-```bash
+```python
 #@debt("implementation")
 def poor_function():
     
@@ -72,15 +73,46 @@ scores:
 techdebt --conf="path/to/config_file.yml" #default is "techdebt.yml"
 ```
 
+
+## Plugins 
+
+You may want to have automatic code checkers do 
+some analysis and being included in the final debt score
+
+For now phpstan is the sole plugin available
+
+edit configuration with the following: 
+
+```yaml
+
+plugin:
+    phpstan:
+        function_to_call: ""
+        folders: 
+            - folder_to_analyse
+        scores: 
+            - 
+
+```
+
+## adding plugin
+
+
+you need to code a file plugin with a method which
+returns scores and then add it to the yarml file
+
+
 ## Roadmap 
 
 - adding line file of annotation
 - better reporting
 - tracking debt over time
 - adding estimation range
-- Incorporating other tools in debt computing like static code analysis
+
 
 
 ## Testing 
 
+```bash 
 pytest -s src/lib.py
+```

@@ -3,7 +3,7 @@
 import argparse
 import yaml
 
-from techdebt.lib import *
+from src.lib import *
 
 
 parser = argparse.ArgumentParser()
@@ -26,11 +26,17 @@ if os.path.isfile(conf_file):
     extensions = options['extensions']
     scores = options['scores']
 
-    debtps = analyse_debt(included_folders, extensions, excluded_folders)
-    debt_statistics = compute_debt_statistics(debtps, scores)
+    if 'plugins' in options:
+        plugin_stats = get_debt_from_plugins(options['plugins'])
 
+    debts = analyse_debt(included_folders, extensions, excluded_folders)
+    debt_statistics = compute_debt_statistics(debts, scores)
+
+    print_stats(debt_statistics)
+    for debt in debts:
+        print("---debt: ", debt['file'], debt['line'], debt['debt_type'], debt['comment'])
     plot_debt(debt_statistics)
-    print(debt_statistics)
+
 
 
 else:

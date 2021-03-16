@@ -2,21 +2,54 @@ import os
 import re
 
 
+
+
+def get_debt_from_plugins(plugins):
+
+    outputs = []
+    for plugin in plugins: 
+
+        output = run_plugin(plugin)
+        outputs.append(output)
+
+    return outputs
+
+
+def run_plugin(plugin):
+
+    module_name = plugin['module_name']
+    if 'analyse_function' in plugin:
+        analyse_function_name = plugin['analyse_function']
+    else:
+        analyse_function_name = "plugin_analyse_debt"
+
+    module = __import__(module_name)
+    function = getattr(module, analyse_function_name)
+
+    return function(plugin)
+
 def extract_debt_annotations(content, debt_annotation='@debt'):
     """
-    Extract debt annotations in a text
+    Extract debt annotations in a dictionnary containing
+    raw annotation and the line
 
     :param content:
     :param debt_annotation:
     :return:
     """
 
+
     pattern = r'{}\(?([\'|\"\w+:?\s+\w+\'\"]*)\)?'.format(debt_annotation)
-    matches = re.findall(pattern, content)
+
+    matches = []
+    for i_line, line in enumerate(content.split('\n')):
+
+        match = re.findall(pattern, line)
+
+        if len(match) > 0:
+            matches.append({'annotation': match[0], 'line': i_line})
 
     return matches
-
-
 
 
 
@@ -45,12 +78,13 @@ def test_extract_debt_annotations():
     """
     out = extract_debt_annotations(content)
 
-    assert out == ["'lala': 'lala'"]
+    assert out == [{'annotation': "'lala': 'lala'", 'line': 2} ]
 
 
 
 
 def parse_annotation(str_annotation):
+
 
     if ":" in str_annotation:
         annotation_data = str_annotation.split(":")
@@ -75,17 +109,18 @@ def analyse_file_debt(file, folder, extension):
     with open(file, 'r', encoding='latin1') as f:
         content = f.read()
 
-    str_annotations = extract_debt_annotations(content)
+    annotations = extract_debt_annotations(content)
 
-    for str_annotation in str_annotations:
+    for dict_annotation in annotations:
 
-        debt_type, debt_comment = parse_annotation(str_annotation)
+        debt_type, debt_comment = parse_annotation(dict_annotation['annotation'])
         debt = {
             'file': file,
             'folder': folder,
             'extension': extension,
             'debt_type': debt_type,
-            'comment':debt_comment
+            'comment':debt_comment,
+            'line': dict_annotation['line']
         }
 
         file_debts.append(debt)
@@ -149,7 +184,7 @@ def compute_debt_statistics(dict_annotations, scores = {}):
 
         debt_type = row['debt_type']
 
-        if  debt_type in scores:
+        if debt_type in scores:
             row['score'] = scores[debt_type]
 
         return row
@@ -158,12 +193,22 @@ def compute_debt_statistics(dict_annotations, scores = {}):
 
 
     return {
-
-        "total": len(df),
+        "total": df['score'].sum(),
         "per_file_extension": df.groupby(['extension'])[['extension', 'score']].agg('sum').reset_index(),
         "per_type": df.groupby(['debt_type'])[['debt_type', 'score']].agg('sum').reset_index(),
         "per_folder": df.groupby(['folder'])[['folder', 'score']].agg('sum').reset_index(),
     }
+
+
+def print_stats(stats):
+
+    print('--- Summary ---')
+    print('total:', stats['total'])
+    for extension in stats['per_file_extension'].iterrows():
+        print(extension[1]['extension'], ': ', extension[1]['score'])
+
+    for extension in stats['per_folder'].iterrows():
+        print(extension[1]['folder'], ': ', extension[1]['score'])
 
 
 def list_file(folder, extensions, exclusions):
